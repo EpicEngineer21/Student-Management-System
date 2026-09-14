@@ -1,0 +1,25 @@
+{
+  "name": "student-management-system",
+  "version": "2.0.0",
+  "description": "Full-stack Student Management System — Next.js + Express + MongoDB + DSA Integration",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "start:server": "cd server && npm start",
+    "build:client": "cd client && npm run build",
+    "seed": "cd server && npm run seed",
+    "test": "cd server && npm test",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": ["student-management", "nextjs", "express", "mongodb", "mongoose", "dsa", "fullstack"],
+  "author": "SMS Development Team",
+  "license": "MIT"
+}
