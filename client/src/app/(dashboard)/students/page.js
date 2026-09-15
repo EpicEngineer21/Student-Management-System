@@ -20,6 +20,64 @@ export default function StudentsPage() {
   
   const [metrics, setMetrics] = useState({ comparisons: 0, ms: 0 });
 
+  // Modal State
+  const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [saving, setSaving] = useState(false);
+
+  const openModal = (student = null) => {
+    if (student) {
+      setEditingId(student._id);
+      setFormData({
+        first_name: student.firstName,
+        last_name: student.lastName,
+        email: student.user?.email || '',
+        phone: student.phone || '',
+        enrollment_number: student.enrollmentNumber,
+        roll_number: student.rollNumber,
+        current_semester: student.currentSemester || 1,
+        gender: student.gender || ''
+      });
+    } else {
+      setEditingId(null);
+      setFormData({});
+    }
+    setShowModal(true);
+  };
+
+  const closeModal = () => setShowModal(false);
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    const data = Object.fromEntries(new FormData(e.target));
+    try {
+      if (editingId) {
+        await api.put(`/students/${editingId}`, data);
+      } else {
+        await api.post('/students', data);
+      }
+      closeModal();
+      loadStudents();
+    } catch (err) {
+      alert(err.message || 'Failed to save');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (confirm('Are you sure you want to deactivate this student?')) {
+      try {
+        await api.delete(`/students/${id}`);
+        loadStudents();
+      } catch (err) {
+        alert(err.message || 'Failed to delete');
+      }
+    }
+  };
+
   useEffect(() => {
     loadStudents();
   }, [search, sortBy, algorithm, page]);
@@ -53,7 +111,7 @@ export default function StudentsPage() {
           <p className="text-gray-500 text-sm">Manage student records</p>
         </div>
         {user?.role === 'ADMIN' && (
-          <button className="btn btn-primary">+ Add Student</button>
+          <button className="btn btn-primary" onClick={() => openModal()}>+ Add Student</button>
         )}
       </div>
 
@@ -135,7 +193,10 @@ export default function StudentsPage() {
                     <span className={`badge ${statusBadge(student.status)}`}>{student.status}</span>
                   </td>
                   <td>
-                    <button className="text-primary hover:text-primary-dark font-medium text-sm">View</button>
+                    <button className="text-primary hover:text-primary-dark font-medium text-sm mr-3" onClick={() => openModal(student)}>Edit</button>
+                    {user?.role === 'ADMIN' && (
+                      <button className="text-danger hover:text-red-700 font-medium text-sm" onClick={() => handleDelete(student._id)}>Delete</button>
+                    )}
                   </td>
                 </tr>
               ))}
@@ -170,6 +231,69 @@ export default function StudentsPage() {
           </div>
         </div>
       </div>
+
+      {/* Add/Edit Student Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <div className="px-6 py-4 border-b flex justify-between items-center">
+              <h3 className="text-lg font-bold text-dark">{editingId ? 'Edit Student' : 'Add New Student'}</h3>
+              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto flex-1">
+              <form id="student-form" className="space-y-4" onSubmit={handleSave}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="form-label">First Name *</label>
+                    <input type="text" name="first_name" defaultValue={formData.first_name} required className="form-control" />
+                  </div>
+                  <div>
+                    <label className="form-label">Last Name *</label>
+                    <input type="text" name="last_name" defaultValue={formData.last_name} required className="form-control" />
+                  </div>
+                  <div>
+                    <label className="form-label">Email *</label>
+                    <input type="email" name="email" defaultValue={formData.email} required disabled={!!editingId} className="form-control disabled:bg-gray-100" />
+                  </div>
+                  <div>
+                    <label className="form-label">Phone</label>
+                    <input type="text" name="phone" defaultValue={formData.phone} className="form-control" />
+                  </div>
+                  <div>
+                    <label className="form-label">Enrollment Number *</label>
+                    <input type="text" name="enrollment_number" defaultValue={formData.enrollment_number} required className="form-control" />
+                  </div>
+                  <div>
+                    <label className="form-label">Roll Number *</label>
+                    <input type="text" name="roll_number" defaultValue={formData.roll_number} required className="form-control" />
+                  </div>
+                  <div>
+                    <label className="form-label">Semester</label>
+                    <input type="number" name="current_semester" defaultValue={formData.current_semester} min="1" max="8" className="form-control" />
+                  </div>
+                  <div>
+                    <label className="form-label">Gender</label>
+                    <select name="gender" defaultValue={formData.gender} className="form-control">
+                      <option value="">Select</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+            
+            <div className="px-6 py-4 border-t bg-gray-50 flex justify-end space-x-3 rounded-b-lg">
+              <button onClick={closeModal} className="btn btn-secondary">Cancel</button>
+              <button type="submit" form="student-form" disabled={saving} className="btn btn-primary">
+                {saving ? 'Saving...' : 'Save Student'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

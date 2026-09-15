@@ -11,6 +11,12 @@ export default function NoticesPage() {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState('');
 
+  // Modal State
+  const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [formData, setFormData] = useState({});
+  const [saving, setSaving] = useState(false);
+
   useEffect(() => {
     loadNotices();
   }, [category]);
@@ -24,6 +30,56 @@ export default function NoticesPage() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openModal = (notice = null) => {
+    if (notice) {
+      setEditingId(notice._id);
+      setFormData({
+        title: notice.title,
+        description: notice.description,
+        category: notice.category,
+        priority: notice.priority,
+        target_role: notice.targetRole || 'ALL',
+        expiry_date: notice.expiryDate ? new Date(notice.expiryDate).toISOString().split('T')[0] : ''
+      });
+    } else {
+      setEditingId(null);
+      setFormData({ priority: 'MEDIUM', category: 'General', target_role: 'ALL' });
+    }
+    setShowModal(true);
+  };
+
+  const closeModal = () => setShowModal(false);
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    const data = Object.fromEntries(new FormData(e.target));
+    try {
+      if (editingId) {
+        await api.put(`/notices/${editingId}`, data);
+      } else {
+        await api.post('/notices', data);
+      }
+      closeModal();
+      loadNotices();
+    } catch (err) {
+      alert(err.message || 'Failed to save');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (confirm('Are you sure you want to delete this notice?')) {
+      try {
+        await api.delete(`/notices/${id}`);
+        loadNotices();
+      } catch (err) {
+        alert(err.message || 'Failed to delete');
+      }
     }
   };
 
@@ -43,7 +99,7 @@ export default function NoticesPage() {
           <p className="text-gray-500 text-sm">Official announcements and alerts</p>
         </div>
         {user?.role === 'ADMIN' && (
-          <button className="btn btn-primary">+ New Notice</button>
+          <button className="btn btn-primary" onClick={() => openModal()}>+ New Notice</button>
         )}
       </div>
 
@@ -81,7 +137,14 @@ export default function NoticesPage() {
               
               <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-400">
                 <span>{formatDate(notice.createdAt)}</span>
-                <span>By Admin</span>
+                {user?.role === 'ADMIN' ? (
+                  <div className="flex space-x-2">
+                    <button className="text-primary hover:text-primary-dark font-medium" onClick={() => openModal(notice)}>Edit</button>
+                    <button className="text-danger hover:text-red-700 font-medium" onClick={() => handleDelete(notice._id)}>Delete</button>
+                  </div>
+                ) : (
+                  <span>By Admin</span>
+                )}
               </div>
             </div>
           </div>
@@ -102,6 +165,70 @@ export default function NoticesPage() {
           </p>
         </div>
       </div>
+
+      {/* Add/Edit Notice Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-lg flex flex-col">
+            <div className="px-6 py-4 border-b flex justify-between items-center">
+              <h3 className="text-lg font-bold text-dark">{editingId ? 'Edit Notice' : 'Post New Notice'}</h3>
+              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+            
+            <div className="p-6">
+              <form id="notice-form" className="space-y-4" onSubmit={handleSave}>
+                <div>
+                  <label className="form-label">Notice Title *</label>
+                  <input type="text" name="title" defaultValue={formData.title} required className="form-control" />
+                </div>
+                <div>
+                  <label className="form-label">Description *</label>
+                  <textarea name="description" defaultValue={formData.description} required rows="3" className="form-control"></textarea>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="form-label">Category *</label>
+                    <select name="category" defaultValue={formData.category} required className="form-control">
+                      <option value="General">General</option>
+                      <option value="Examination">Examination</option>
+                      <option value="Holiday">Holiday</option>
+                      <option value="Fee">Fee</option>
+                      <option value="Event">Event</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="form-label">Priority Level *</label>
+                    <select name="priority" defaultValue={formData.priority} required className="form-control">
+                      <option value="LOW">Low</option>
+                      <option value="MEDIUM">Medium</option>
+                      <option value="HIGH">High (Urgent)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="form-label">Target Audience</label>
+                    <select name="target_role" defaultValue={formData.target_role} className="form-control">
+                      <option value="ALL">Everyone</option>
+                      <option value="STUDENT">Students Only</option>
+                      <option value="TEACHER">Teachers Only</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="form-label">Expiry Date</label>
+                    <input type="date" name="expiry_date" defaultValue={formData.expiry_date} className="form-control" />
+                  </div>
+                </div>
+              </form>
+            </div>
+            
+            <div className="px-6 py-4 border-t bg-gray-50 flex justify-end space-x-3 rounded-b-lg">
+              <button onClick={closeModal} type="button" className="btn btn-secondary">Cancel</button>
+              <button type="submit" form="notice-form" disabled={saving} className="btn btn-primary">
+                {saving ? 'Posting...' : 'Post Notice'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
