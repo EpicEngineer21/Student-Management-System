@@ -3,45 +3,50 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
+import { 
+  LayoutDashboard, Users, GraduationCap, Building2, BookOpen, 
+  BookMarked, School, CalendarCheck, FileSpreadsheet, 
+  PenTool, Clock, Bell, Banknote, BrainCircuit, LogOut, ChevronRight, X
+} from 'lucide-react';
 
 const adminLinks = [
-  { href: '/admin', label: 'Dashboard', icon: '📊' },
-  { href: '/students', label: 'Students', icon: '🎓' },
-  { href: '/teachers', label: 'Teachers', icon: '👨‍🏫' },
-  { href: '/departments', label: 'Departments', icon: '🏢' },
-  { href: '/courses', label: 'Courses', icon: '📚' },
-  { href: '/subjects', label: 'Subjects', icon: '📖' },
-  { href: '/classes', label: 'Classes', icon: '🏫' },
-  { href: '/attendance', label: 'Attendance', icon: '📋' },
-  { href: '/marks', label: 'Marks & Results', icon: '📝' },
-  { href: '/exams', label: 'Exams', icon: '✍️' },
-  { href: '/timetable', label: 'Timetable', icon: '🕒' },
-  { href: '/notices', label: 'Notices', icon: '📢' },
-  { href: '/fees', label: 'Fees', icon: '💰' },
-  { href: '/dsa-analytics', label: 'DSA Analytics', icon: '🧠' },
+  { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/students', label: 'Students', icon: Users },
+  { href: '/teachers', label: 'Teachers', icon: GraduationCap },
+  { href: '/departments', label: 'Departments', icon: Building2 },
+  { href: '/courses', label: 'Courses', icon: BookOpen },
+  { href: '/subjects', label: 'Subjects', icon: BookMarked },
+  { href: '/classes', label: 'Classes', icon: School },
+  { href: '/attendance', label: 'Attendance', icon: CalendarCheck },
+  { href: '/marks', label: 'Marks & Results', icon: FileSpreadsheet },
+  { href: '/exams', label: 'Exams', icon: PenTool },
+  { href: '/timetable', label: 'Timetable', icon: Clock },
+  { href: '/notices', label: 'Notices', icon: Bell },
+  { href: '/fees', label: 'Fees', icon: Banknote },
+  { href: '/dsa-analytics', label: 'DSA Analytics', icon: BrainCircuit },
 ];
 
 const teacherLinks = [
-  { href: '/teacher', label: 'Dashboard', icon: '📊' },
-  { href: '/students', label: 'Students', icon: '🎓' },
-  { href: '/attendance', label: 'Attendance', icon: '📋' },
-  { href: '/marks', label: 'Marks', icon: '📝' },
-  { href: '/assignments', label: 'Assignments', icon: '📚' },
-  { href: '/timetable', label: 'Timetable', icon: '🕒' },
-  { href: '/notices', label: 'Notices', icon: '📢' },
+  { href: '/teacher', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/students', label: 'Students', icon: Users },
+  { href: '/attendance', label: 'Attendance', icon: CalendarCheck },
+  { href: '/marks', label: 'Marks', icon: FileSpreadsheet },
+  { href: '/assignments', label: 'Assignments', icon: BookOpen },
+  { href: '/timetable', label: 'Timetable', icon: Clock },
+  { href: '/notices', label: 'Notices', icon: Bell },
 ];
 
 const studentLinks = [
-  { href: '/student', label: 'Dashboard', icon: '📊' },
-  { href: '/attendance', label: 'My Attendance', icon: '📋' },
-  { href: '/marks', label: 'My Marks', icon: '📝' },
-  { href: '/assignments', label: 'Assignments', icon: '📚' },
-  { href: '/timetable', label: 'Timetable', icon: '🕒' },
-  { href: '/fees', label: 'My Fees', icon: '💰' },
-  { href: '/notices', label: 'Notices', icon: '📢' },
+  { href: '/student', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/attendance', label: 'My Attendance', icon: CalendarCheck },
+  { href: '/marks', label: 'My Marks', icon: FileSpreadsheet },
+  { href: '/assignments', label: 'Assignments', icon: BookOpen },
+  { href: '/timetable', label: 'Timetable', icon: Clock },
+  { href: '/fees', label: 'My Fees', icon: Banknote },
+  { href: '/notices', label: 'Notices', icon: Bell },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ mobileOpen, setMobileOpen }) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
 
@@ -51,48 +56,62 @@ export default function Sidebar() {
               : [];
 
   return (
-    <aside className="w-64 bg-dark text-white flex flex-col h-screen fixed overflow-y-auto">
-      <div className="p-4 border-b border-dark-lighter flex items-center space-x-3">
-        <div className="w-8 h-8 bg-primary rounded flex items-center justify-center font-bold text-xl">S</div>
-        <span className="text-xl font-bold tracking-wider">SMS<span className="text-primary text-xs ml-1 align-top">2.0</span></span>
+    <aside 
+      className={`w-64 bg-nav text-white flex flex-col h-screen fixed z-30 transition-transform duration-300 ease-in-out ${
+        mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+      }`}
+    >
+      <div className="p-5 border-b border-white/10 flex items-center justify-between sticky top-0 bg-nav z-10">
+        <div className="flex items-center space-x-3">
+          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center font-bold text-lg shadow-sm">S</div>
+          <span className="text-xl font-bold tracking-wider">SMS<span className="text-primary text-xs ml-1 align-top opacity-80">2.0</span></span>
+        </div>
+        {mobileOpen && (
+          <button onClick={() => setMobileOpen(false)} className="md:hidden text-slate-400 hover:text-white">
+            <X size={24} />
+          </button>
+        )}
       </div>
       
-      <div className="p-4">
-        <div className="text-xs uppercase text-gray-400 font-semibold tracking-wider mb-2">Main Menu</div>
+      <div className="p-4 flex-1 overflow-y-auto">
+        <div className="text-xs uppercase text-slate-400 font-semibold tracking-wider mb-3 px-3">Main Menu</div>
         <nav className="space-y-1">
           {links.map((link) => {
             const isActive = pathname === link.href || pathname.startsWith(link.href + '/');
+            const Icon = link.icon;
             return (
               <Link 
                 key={link.href} 
                 href={link.href}
-                className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
-                  isActive ? 'bg-primary text-white' : 'text-gray-300 hover:bg-dark-lighter hover:text-white'
+                onClick={() => setMobileOpen && setMobileOpen(false)}
+                className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-200 ${
+                  isActive ? 'bg-primary text-white shadow-sm' : 'text-slate-300 hover:bg-white/5 hover:text-white'
                 }`}
               >
-                <span>{link.icon}</span>
-                <span className="text-sm font-medium">{link.label}</span>
+                <Icon size={18} className={isActive ? 'text-white' : 'text-slate-400'} />
+                <span className="text-sm font-medium flex-1">{link.label}</span>
+                {isActive && <ChevronRight size={14} className="opacity-50" />}
               </Link>
             );
           })}
         </nav>
       </div>
 
-      <div className="mt-auto p-4 border-t border-dark-lighter">
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-lg font-semibold">
+      <div className="mt-auto p-4 border-t border-white/10 bg-nav/95 backdrop-blur-sm sticky bottom-0">
+        <div className="flex items-center space-x-3 mb-4 px-2">
+          <div className="w-9 h-9 rounded-full bg-primary/20 text-primary border border-primary/30 flex items-center justify-center text-sm font-bold shadow-sm">
             {user?.email?.[0]?.toUpperCase() || 'U'}
           </div>
-          <div>
-            <div className="text-sm font-medium truncate w-40">{user?.email}</div>
-            <div className="text-xs text-gray-400 capitalize">{user?.role?.toLowerCase()}</div>
+          <div className="flex-1 overflow-hidden">
+            <div className="text-sm font-medium truncate text-white">{user?.email}</div>
+            <div className="text-xs text-slate-400 capitalize">{user?.role?.toLowerCase()}</div>
           </div>
         </div>
         <button 
           onClick={logout}
-          className="w-full flex items-center justify-center space-x-2 px-3 py-2 bg-dark-lighter hover:bg-red-600 rounded-md text-sm font-medium transition-colors"
+          className="w-full flex items-center justify-center space-x-2 px-3 py-2.5 bg-white/5 hover:bg-danger/90 hover:text-white rounded-lg text-sm font-medium text-slate-300 transition-colors"
         >
-          <span>🚪</span>
+          <LogOut size={16} />
           <span>Sign Out</span>
         </button>
       </div>

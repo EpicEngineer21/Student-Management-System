@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { statusBadge } from '@/lib/utils';
 import { useAuth } from '@/lib/auth';
+import { Building2, Plus, Edit2, Trash2, X, Check, Users, BookOpen, GraduationCap } from 'lucide-react';
 
 export default function DepartmentsPage() {
   const { user } = useAuth();
@@ -84,11 +85,13 @@ export default function DepartmentsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-dark">Departments</h2>
-          <p className="text-gray-500 text-sm">Academic divisions and HODs</p>
+          <h2 className="text-2xl font-bold text-main tracking-tight">Departments</h2>
+          <p className="text-secondary text-sm mt-1">Academic divisions and HODs</p>
         </div>
         {user?.role === 'ADMIN' && (
-          <button className="btn btn-primary" onClick={() => openModal()}>+ Add Department</button>
+          <button className="btn btn-primary flex items-center" onClick={() => openModal()}>
+            <Plus size={16} className="mr-2" /> Add Department
+          </button>
         )}
       </div>
 
@@ -97,39 +100,42 @@ export default function DepartmentsPage() {
           <div className="col-span-full flex justify-center py-10"><div className="spinner"></div></div>
         ) : (
           departments.map((dept) => (
-            <div key={dept._id} className="card hover:shadow-md transition-shadow">
-              <div className="card-header border-b-2 border-primary">
+            <div key={dept._id} className="card hover:shadow-md transition-shadow border-border bg-surface">
+              <div className="card-header border-b border-border flex justify-between items-start bg-background/50">
                 <div>
-                  <h3 className="card-title">{dept.name}</h3>
-                  <p className="text-sm font-mono text-gray-500">{dept.code}</p>
+                  <h3 className="card-title text-main">{dept.name}</h3>
+                  <p className="text-sm font-mono text-secondary">{dept.code}</p>
                 </div>
                 <span className={`badge ${statusBadge(dept.status)}`}>{dept.status}</span>
               </div>
               <div className="card-body bg-gray-50/50">
                 <div className="mb-4">
-                  <div className="text-xs text-gray-500 uppercase font-semibold">Head of Department</div>
-                  <div className="font-medium text-dark">{dept.hodName || 'Not Assigned'}</div>
+                  <div className="text-xs text-secondary uppercase font-semibold">Head of Department</div>
+                  <div className="font-medium text-main">{dept.hodName || 'Not Assigned'}</div>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-2 text-center border-t border-gray-100 pt-4 mt-4 mb-4">
-                  <div>
+                <div className="grid grid-cols-3 gap-2 text-center border-t border-border pt-4 mt-4 mb-4">
+                  <div className="flex flex-col items-center">
+                    <BookOpen size={16} className="text-secondary mb-1" />
                     <div className="text-xl font-bold text-primary">{dept.course_count || dept.stats?.courses || 0}</div>
-                    <div className="text-xs text-gray-500">Courses</div>
+                    <div className="text-xs text-secondary">Courses</div>
                   </div>
-                  <div>
+                  <div className="flex flex-col items-center">
+                    <Users size={16} className="text-secondary mb-1" />
                     <div className="text-xl font-bold text-primary">{dept.teacher_count || dept.stats?.teachers || 0}</div>
-                    <div className="text-xs text-gray-500">Teachers</div>
+                    <div className="text-xs text-secondary">Teachers</div>
                   </div>
-                  <div>
+                  <div className="flex flex-col items-center">
+                    <GraduationCap size={16} className="text-secondary mb-1" />
                     <div className="text-xl font-bold text-primary">{dept.student_count || dept.stats?.students || 0}</div>
-                    <div className="text-xs text-gray-500">Students</div>
+                    <div className="text-xs text-secondary">Students</div>
                   </div>
                 </div>
 
                 {user?.role === 'ADMIN' && (
-                  <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
-                    <button className="text-primary hover:text-primary-dark text-sm font-medium" onClick={() => openModal(dept)}>Edit</button>
-                    <button className="text-danger hover:text-red-700 text-sm font-medium" onClick={() => handleDelete(dept._id)}>Delete</button>
+                  <div className="flex justify-end space-x-2 pt-3 border-t border-border">
+                    <button className="text-primary hover:text-primary-dark text-sm font-medium flex items-center" onClick={() => openModal(dept)}><Edit2 size={14} className="mr-1" /> Edit</button>
+                    <button className="text-danger hover:text-red-700 text-sm font-medium flex items-center" onClick={() => handleDelete(dept._id)}><Trash2 size={14} className="mr-1" /> Delete</button>
                   </div>
                 )}
               </div>
@@ -143,11 +149,11 @@ export default function DepartmentsPage() {
 
       {/* Add/Edit Department Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md flex flex-col">
-            <div className="px-6 py-4 border-b flex justify-between items-center">
-              <h3 className="text-lg font-bold text-dark">{editingId ? 'Edit Department' : 'Add Department'}</h3>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">✕</button>
+        <div className="fixed inset-0 bg-nav/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-6">
+          <div className="bg-surface rounded-xl shadow-lg w-full max-w-md flex flex-col overflow-hidden border border-border">
+            <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-background/50">
+              <h3 className="text-lg font-bold text-main flex items-center"><Building2 size={18} className="mr-2" /> {editingId ? 'Edit Department' : 'Add Department'}</h3>
+              <button onClick={closeModal} className="text-secondary hover:text-main transition-colors"><X size={20} /></button>
             </div>
             
             <div className="p-6">
@@ -178,10 +184,10 @@ export default function DepartmentsPage() {
               </form>
             </div>
             
-            <div className="px-6 py-4 border-t bg-gray-50 flex justify-end space-x-3 rounded-b-lg">
+            <div className="px-6 py-4 border-t border-border bg-gray-50 flex justify-end space-x-3">
               <button onClick={closeModal} type="button" className="btn btn-secondary">Cancel</button>
-              <button type="submit" form="dept-form" disabled={saving} className="btn btn-primary">
-                {saving ? 'Saving...' : 'Save'}
+              <button type="submit" form="dept-form" disabled={saving} className="btn btn-primary flex items-center">
+                {saving ? 'Saving...' : <><Check size={16} className="mr-2" /> Save</>}
               </button>
             </div>
           </div>

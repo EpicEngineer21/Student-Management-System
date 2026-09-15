@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { statusBadge } from '@/lib/utils';
 import { useAuth } from '@/lib/auth';
+import { BookMarked, Plus, Edit2, Trash2, X, Check, Loader2 } from 'lucide-react';
 
 export default function SubjectsPage() {
   const { user } = useAuth();
@@ -107,16 +108,18 @@ export default function SubjectsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-dark">Subjects</h2>
-          <p className="text-gray-500 text-sm">Course syllabus and assignments</p>
+          <h2 className="text-2xl font-bold text-main tracking-tight">Subjects</h2>
+          <p className="text-secondary text-sm mt-1">Course syllabus and assignments</p>
         </div>
         {user?.role === 'ADMIN' && (
-          <button className="btn btn-primary" onClick={() => openModal()}>+ Add Subject</button>
+          <button className="btn btn-primary flex items-center" onClick={() => openModal()}>
+            <Plus size={16} className="mr-2" /> Add Subject
+          </button>
         )}
       </div>
 
       <div className="card">
-        <div className="table-wrapper relative min-h-[300px]">
+        <div className="table-wrapper relative min-h-[300px] bg-surface">
           {loading && (
             <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
               <div className="spinner"></div>
@@ -151,9 +154,13 @@ export default function SubjectsPage() {
                   <td>{sub.teacher ? `${sub.teacher.firstName} ${sub.teacher.lastName}` : 'Unassigned'}</td>
                   <td>
                     {user?.role === 'ADMIN' && (
-                      <div className="flex space-x-3">
-                        <button className="text-primary hover:text-primary-dark font-medium text-sm" onClick={() => openModal(sub)}>Edit</button>
-                        <button className="text-danger hover:text-red-700 font-medium text-sm" onClick={() => handleDelete(sub._id)}>Delete</button>
+                      <div className="flex space-x-2">
+                        <button className="p-1.5 text-secondary hover:text-primary rounded-md hover:bg-blue-50 transition-colors" onClick={() => openModal(sub)}>
+                          <Edit2 size={16} />
+                        </button>
+                        <button className="p-1.5 text-secondary hover:text-danger rounded-md hover:bg-red-50 transition-colors" onClick={() => handleDelete(sub._id)}>
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     )}
                   </td>
@@ -161,7 +168,12 @@ export default function SubjectsPage() {
               ))}
               {subjects.length === 0 && !loading && (
                 <tr>
-                  <td colSpan="8" className="text-center py-10 text-gray-500">No subjects found.</td>
+                  <td colSpan="8" className="text-center py-10">
+                    <div className="flex flex-col items-center justify-center text-secondary">
+                      <BookMarked size={48} className="mb-2 opacity-50" />
+                      <p>No subjects found.</p>
+                    </div>
+                  </td>
                 </tr>
               )}
             </tbody>
@@ -171,70 +183,73 @@ export default function SubjectsPage() {
 
       {/* Add/Edit Subject Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl flex flex-col">
-            <div className="px-6 py-4 border-b flex justify-between items-center">
-              <h3 className="text-lg font-bold text-dark">{editingId ? 'Edit Subject' : 'Add Subject'}</h3>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-600">✕</button>
+        <div className="fixed inset-0 bg-nav/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-6">
+          <div className="bg-surface rounded-xl shadow-lg w-full max-w-2xl flex flex-col overflow-hidden border border-border">
+            <div className="px-6 py-4 border-b border-border flex justify-between items-center bg-background/50">
+              <h3 className="text-lg font-bold text-main">{editingId ? 'Edit Subject' : 'Add Subject'}</h3>
+              <button onClick={closeModal} className="text-secondary hover:text-main transition-colors">
+                <X size={20} />
+              </button>
             </div>
             
             <div className="p-6">
               <form id="subject-form" className="space-y-4" onSubmit={handleSave}>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2 md:col-span-1">
-                    <label className="form-label">Subject Code *</label>
-                    <input type="text" name="code" defaultValue={formData.code} required className="form-control" />
+                    <label className="form-label text-main">Subject Code *</label>
+                    <input type="text" name="code" defaultValue={formData.code} required className="form-control text-main" />
                   </div>
                   <div className="col-span-2 md:col-span-1">
-                    <label className="form-label">Subject Name *</label>
-                    <input type="text" name="name" defaultValue={formData.name} required className="form-control" />
+                    <label className="form-label text-main">Subject Name *</label>
+                    <input type="text" name="name" defaultValue={formData.name} required className="form-control text-main" />
                   </div>
                   
                   <div>
-                    <label className="form-label">Department *</label>
-                    <select name="department_id" defaultValue={formData.department_id} required className="form-control">
+                    <label className="form-label text-main">Department *</label>
+                    <select name="department_id" defaultValue={formData.department_id} required className="form-control text-main">
                       <option value="">Select Department</option>
                       {departments.map(d => <option key={d._id} value={d._id}>{d.name}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="form-label">Course / Program *</label>
-                    <select name="course_id" defaultValue={formData.course_id} required className="form-control">
+                    <label className="form-label text-main">Course / Program *</label>
+                    <select name="course_id" defaultValue={formData.course_id} required className="form-control text-main">
                       <option value="">Select Course</option>
                       {courses.map(c => <option key={c._id} value={c._id}>{c.name}</option>)}
                     </select>
                   </div>
 
                   <div>
-                    <label className="form-label">Semester *</label>
-                    <input type="number" name="semester" defaultValue={formData.semester} required min="1" max="12" className="form-control" />
+                    <label className="form-label text-main">Semester *</label>
+                    <input type="number" name="semester" defaultValue={formData.semester} required min="1" max="12" className="form-control text-main" />
                   </div>
                   <div>
-                    <label className="form-label">Assigned Teacher</label>
-                    <select name="teacher_id" defaultValue={formData.teacher_id} className="form-control">
+                    <label className="form-label text-main">Assigned Teacher</label>
+                    <select name="teacher_id" defaultValue={formData.teacher_id} className="form-control text-main">
                       <option value="">Unassigned</option>
                       {teachers.map(t => <option key={t._id} value={t._id}>{t.firstName} {t.lastName}</option>)}
                     </select>
                   </div>
 
                   <div>
-                    <label className="form-label">Subject Type</label>
-                    <select name="type" defaultValue={formData.type} className="form-control">
+                    <label className="form-label text-main">Subject Type</label>
+                    <select name="type" defaultValue={formData.type} className="form-control text-main">
                       <option value="Theory">Theory</option>
                       <option value="Practical">Practical</option>
                     </select>
                   </div>
                   <div>
-                    <label className="form-label">Credits</label>
-                    <input type="number" name="credits" defaultValue={formData.credits} min="1" max="6" className="form-control" />
+                    <label className="form-label text-main">Credits</label>
+                    <input type="number" name="credits" defaultValue={formData.credits} min="1" max="6" className="form-control text-main" />
                   </div>
                 </div>
               </form>
             </div>
             
-            <div className="px-6 py-4 border-t bg-gray-50 flex justify-end space-x-3 rounded-b-lg">
+            <div className="px-6 py-4 border-t border-border bg-gray-50 flex justify-end space-x-3">
               <button onClick={closeModal} type="button" className="btn btn-secondary">Cancel</button>
-              <button type="submit" form="subject-form" disabled={saving} className="btn btn-primary">
+              <button type="submit" form="subject-form" disabled={saving} className="btn btn-primary flex items-center">
+                {saving ? <Loader2 size={16} className="animate-spin mr-2" /> : <Check size={16} className="mr-2" />}
                 {saving ? 'Saving...' : 'Save Subject'}
               </button>
             </div>

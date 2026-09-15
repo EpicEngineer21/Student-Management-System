@@ -8,25 +8,30 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#4361ee',
-        'primary-dark': '#3a0ca3',
-        secondary: '#3f37c9',
-        accent: '#4cc9f0',
-        dark: '#1e293b',
-        'dark-lighter': '#334155',
-        'gray-light': '#cbd5e1',
-        light: '#f1f5f9',
-        'light-card': '#ffffff',
-        success: '#10b981',
-        warning: '#f59e0b',
-        danger: '#ef4444',
+        primary: '#2563EB',
+        'primary-hover': '#1D4ED8',
+        nav: '#172033',
+        background: '#F6F8FB',
+        surface: '#FFFFFF',
+        main: '#172033',
+        secondary: '#64748B',
+        border: '#E2E8F0',
+        success: '#059669',
+        warning: '#D97706',
+        danger: '#DC2626',
+        info: '#0891B2',
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       boxShadow: {
-        'card': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-        'modal': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
+        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)',
+      },
+      borderRadius: {
+        'md': '0.375rem', // 6px
+        'lg': '0.5rem', // 8px
       },
     },
   },
