@@ -8,30 +8,35 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#2563EB',
-        'primary-hover': '#1D4ED8',
-        nav: '#172033',
-        background: '#F6F8FB',
+        primary: '#4F46E5', // Indigo 600 - sleek and modern
+        'primary-hover': '#4338CA', // Indigo 700
+        nav: '#0F172A', // Slate 900 - rich dark theme
+        background: '#F8FAFC', // Slate 50 - crisp neutral background
         surface: '#FFFFFF',
-        main: '#172033',
-        secondary: '#64748B',
-        border: '#E2E8F0',
-        success: '#059669',
-        warning: '#D97706',
-        danger: '#DC2626',
-        info: '#0891B2',
+        main: '#0F172A', // Slate 900 for main text
+        secondary: '#64748B', // Slate 500 for secondary text
+        border: '#E2E8F0', // Slate 200
+        success: '#10B981', // Emerald 500
+        warning: '#F59E0B', // Amber 500
+        danger: '#EF4444', // Red 500
+        info: '#0EA5E9', // Sky 500
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       boxShadow: {
-        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
-        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025)',
+        'sm': '0 1px 2px 0 rgba(15, 23, 42, 0.05)',
+        'md': '0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -1px rgba(15, 23, 42, 0.03)',
+        'lg': '0 10px 15px -3px rgba(15, 23, 42, 0.05), 0 4px 6px -2px rgba(15, 23, 42, 0.025)',
+        'soft': '0 4px 20px -2px rgba(15, 23, 42, 0.05)',
+        'card': '0px 1px 3px rgba(15, 23, 42, 0.08), 0px 4px 12px rgba(15, 23, 42, 0.04)',
+        'glow': '0 0 15px rgba(79, 70, 229, 0.3)',
       },
       borderRadius: {
-        'md': '0.375rem', // 6px
-        'lg': '0.5rem', // 8px
+        'md': '0.5rem', // 8px
+        'lg': '0.75rem', // 12px
+        'xl': '1rem', // 16px
+        '2xl': '1.5rem', // 24px
       },
     },
   },

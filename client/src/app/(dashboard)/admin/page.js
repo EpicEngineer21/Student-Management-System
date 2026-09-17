@@ -33,20 +33,20 @@ export default function AdminDashboard() {
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: 'Total Students', value: data.stats.totalStudents, icon: Users, color: 'bg-blue-50 text-blue-600', border: 'border-blue-100' },
-          { label: 'Total Teachers', value: data.stats.totalTeachers, icon: GraduationCap, color: 'bg-emerald-50 text-emerald-600', border: 'border-emerald-100' },
-          { label: 'Departments', value: data.stats.totalDepts, icon: Building2, color: 'bg-purple-50 text-purple-600', border: 'border-purple-100' },
-          { label: 'Active Exams', value: data.stats.activeExams, icon: FileText, color: 'bg-amber-50 text-amber-600', border: 'border-amber-100' },
+          { label: 'Total Students', value: data.stats.totalStudents, icon: Users, color: 'bg-gradient-to-br from-blue-50 to-indigo-100 text-blue-600', border: 'border-blue-500' },
+          { label: 'Total Teachers', value: data.stats.totalTeachers, icon: GraduationCap, color: 'bg-gradient-to-br from-emerald-50 to-teal-100 text-emerald-600', border: 'border-emerald-500' },
+          { label: 'Departments', value: data.stats.totalDepts, icon: Building2, color: 'bg-gradient-to-br from-purple-50 to-fuchsia-100 text-purple-600', border: 'border-purple-500' },
+          { label: 'Active Exams', value: data.stats.activeExams, icon: FileText, color: 'bg-gradient-to-br from-amber-50 to-orange-100 text-amber-600', border: 'border-amber-500' },
         ].map((s, i) => {
           const Icon = s.icon;
           return (
-            <div key={i} className={`card p-6 flex items-center space-x-4 border-l-4 ${s.border}`}>
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${s.color}`}>
-                <Icon size={24} />
+            <div key={i} className={`card p-6 flex items-center space-x-5 border-l-[6px] ${s.border} group`}>
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${s.color} transition-transform group-hover:scale-110 group-hover:-rotate-3`}>
+                <Icon size={28} />
               </div>
               <div>
-                <p className="text-sm font-medium text-secondary">{s.label}</p>
-                <h3 className="text-2xl font-bold text-main">{s.value}</h3>
+                <p className="text-sm font-semibold text-secondary uppercase tracking-wider mb-1">{s.label}</p>
+                <h3 className="text-3xl font-extrabold text-main tracking-tight">{s.value}</h3>
               </div>
             </div>
           );
@@ -58,10 +58,12 @@ export default function AdminDashboard() {
         <div className="lg:col-span-2 card">
           <div className="card-header">
             <h3 className="card-title flex items-center">
-              <BookOpen size={18} className="mr-2 text-primary" />
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mr-3">
+                <BookOpen size={18} className="text-primary" />
+              </div>
               Recent Notices
             </h3>
-            <Link href="/notices" className="text-sm text-primary font-medium hover:underline">View All</Link>
+            <Link href="/notices" className="text-sm text-primary font-semibold hover:text-primary-hover hover:underline transition-all">View All →</Link>
           </div>
           <div className="p-0 table-wrapper">
             <table className="table">
@@ -98,7 +100,9 @@ export default function AdminDashboard() {
         <div className="card">
           <div className="card-header">
             <h3 className="card-title flex items-center">
-              <Activity size={18} className="mr-2 text-primary" />
+              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center mr-3">
+                <Activity size={18} className="text-indigo-600" />
+              </div>
               System Activity
             </h3>
           </div>
@@ -107,19 +111,20 @@ export default function AdminDashboard() {
               {data.recentActivity.map((log) => (
                 <li key={log._id} className="p-4 hover:bg-gray-50 transition-colors">
                   <div className="flex space-x-3">
-                    <div className="mt-0.5">
-                      <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center">
+                    <div className="mt-1">
+                      <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 border border-slate-200 shadow-sm flex items-center justify-center">
                         <Clock size={14} />
                       </div>
                     </div>
                     <div className="flex-1 space-y-1">
                       <div className="flex items-start justify-between">
-                        <h3 className="text-sm font-medium text-main leading-tight">{log.action}</h3>
+                        <h3 className="text-sm font-semibold text-main leading-tight">{log.action}</h3>
                       </div>
-                      <p className="text-xs text-secondary mt-1">
-                        by <span className="font-medium text-main">{log.userEmail || 'System'}</span> ({log.role})
-                        <span className="mx-1">•</span>
-                        {new Date(log.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      <p className="text-xs text-secondary mt-1 font-medium">
+                        by <span className="font-semibold text-primary">{log.userEmail || 'System'}</span> 
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 ml-2 uppercase tracking-wide border border-slate-200">{log.role}</span>
+                        <span className="mx-2 text-slate-300">•</span>
+                        <span className="text-slate-500">{new Date(log.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
                       </p>
                     </div>
                   </div>
