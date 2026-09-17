@@ -23,8 +23,6 @@ const studentSchema = new mongoose.Schema({
   profilePhoto:     { type: String },
 }, { timestamps: true });
 
-studentSchema.index({ user: 1 });
-studentSchema.index({ enrollmentNumber: 1 });
 studentSchema.index({ department: 1 });
 studentSchema.index({ course: 1 });
 studentSchema.index({ rollNumber: 1, department: 1, course: 1, currentSemester: 1, section: 1 });

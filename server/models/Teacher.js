@@ -14,9 +14,7 @@ const teacherSchema = new mongoose.Schema({
   status:         { type: String, default: 'ACTIVE', enum: ['ACTIVE', 'INACTIVE', 'ON_LEAVE'] },
 }, { timestamps: true });
 
-teacherSchema.index({ user: 1 });
 teacherSchema.index({ department: 1 });
-teacherSchema.index({ employeeId: 1 });
 
 teacherSchema.virtual('fullName').get(function () {
   return `${this.firstName} ${this.lastName}`;

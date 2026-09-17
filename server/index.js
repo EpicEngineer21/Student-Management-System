@@ -38,6 +38,11 @@ app.use('/api/notices', require('./routes/notice.routes'));
 app.use('/api/fees', require('./routes/fee.routes'));
 app.use('/api/dashboard', require('./routes/dashboard.routes'));
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({ message: 'Welcome to the Student Management System API. Please use /api endpoints.' });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'SMS API is running', timestamp: new Date().toISOString() });
